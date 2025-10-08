@@ -23,6 +23,5 @@
         :isAdded="true"
         :onClickAdd="onClickAdd"
     />
-
   </div>
 </template>
