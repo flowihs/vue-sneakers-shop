@@ -16,25 +16,34 @@
     filters.sortBy = event.target.value;
   }
 
-  onMounted(async () => {
+  const onChangeSearchInput = event => {
+    filters.searchQuery = event.target.value;
+  }
+
+  const fetchItems = async () => {
     try {
-      const { data } = await axios.get('https://b7cc7f9c219158b9.mokky.dev/items');
+      const params = {
+        sortBy: filters.sortBy,
+      }
+
+      if (filters.searchQuery) {
+        params.title = `*${filters.searchQuery}*`;
+      }
+
+      const { data } = await axios.get('' +
+          `https://b7cc7f9c219158b9.mokky.dev/items`,{
+            params
+          }
+      );
 
       items.value = data;
     } catch (err) {
       console.log(err);
     }
-  })
+  }
 
-  watch(filters, async () => {
-    try {
-      const { data } = await axios.get('https://b7cc7f9c219158b9.mokky.dev/items?sortBy=' + filters.sortBy );
-
-      items.value = data;
-    } catch (err) {
-      console.log(err);
-    }
-  });
+  onMounted(fetchItems )
+  watch(filters, fetchItems );
 
 </script>
 
@@ -60,6 +69,7 @@
             >
 
             <input
+                @input="onChangeSearchInput"
                 placeholder="Поиск..."
                 class="border border-gray-200 rounded-md py-2 pl-11 pr-4 outline-none focus:border-gray-400 transition"
             >
